@@ -1,4 +1,4 @@
-package com.example.cactus.viewmodels.repository
+package com.example.cactus.repository
 
 import com.example.cactus.data.PlantData
 import kotlinx.coroutines.flow.Flow

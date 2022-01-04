@@ -1,9 +1,9 @@
-package com.example.cactus.viewmodels.repository
+package com.example.cactus.repository
 
 import android.content.Context
 import com.example.cactus.R
 import com.example.cactus.data.PlantData
-import com.example.cactus.viewmodels.repository.common.jsonToClass
+import com.example.cactus.common.jsonToClass
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

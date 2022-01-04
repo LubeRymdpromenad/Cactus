@@ -2,6 +2,7 @@ package com.example.cactus.views
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,29 +14,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
-
 import com.example.cactus.data.PlantData
 import com.example.cactus.ui.theme.CactusTheme
 import com.example.cactus.viewmodels.PlantListViewState
 
 
-
 @Composable
-fun PlantListScreen(viewState: PlantListViewState) {
+fun PlantListScreen(
+    viewState: PlantListViewState,
+    onItemClick: () -> Unit
+) {
     val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier.verticalScroll(scrollState)
     ) {
         viewState.plantList.forEach {
-            PlantListItem(it)
+            PlantListItem(it, onItemClick)
         }
     }
 }
 
 @Composable
-fun PlantListItem(plantData: PlantData) {
-    Row() {
+fun PlantListItem(
+    plantData: PlantData,
+    onItemClick: () -> Unit) {
+    Row(
+        modifier = Modifier.clickable(onClick = onItemClick)
+    ) {
         Image(
             modifier = Modifier.size(120.dp, 90.dp),
             painter = rememberImagePainter(
@@ -53,11 +59,11 @@ fun PlantListItem(plantData: PlantData) {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     CactusTheme {
-        PlantListScreen(PlantListViewState())
+        PlantListScreen(PlantListViewState()) {}
     }
 }
+

@@ -1,4 +1,4 @@
-package com.example.cactus.viewmodels.repository.common
+package com.example.cactus.common
 
 import android.content.Context
 import androidx.annotation.RawRes

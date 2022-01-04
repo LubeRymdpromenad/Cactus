@@ -1,8 +1,8 @@
 package com.example.cactus.di
 
 import android.content.Context
-import com.example.cactus.viewmodels.repository.PlantDataStore
-import com.example.cactus.viewmodels.repository.PlantRepository
+import com.example.cactus.repository.PlantDataStore
+import com.example.cactus.repository.PlantRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
