@@ -1,6 +1,5 @@
 package com.example.cactus
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,19 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.cactus.common.jsonToClass
 import com.example.cactus.data.PlantData
 import com.example.cactus.data.PlantDataParamType
+import com.example.cactus.data.toJson
 import com.example.cactus.ui.theme.CactusTheme
 import com.example.cactus.viewmodels.*
 import com.example.cactus.views.CactusScreen
 import com.example.cactus.views.PlantListScreen
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,7 +37,6 @@ class MainActivity : ComponentActivity() {
         val plantListViewState by plantListViewModel.viewState
         val plantDetailViewState by plantDetailViewModel.viewState
         setContent {
-//            PlantListScreen(viewState = plantListViewState, {})
             CactusMainScreen(
                 plantListViewState = plantListViewState,
                 plantDetailViewState = plantDetailViewState
@@ -101,41 +97,24 @@ fun CactusNavHost(
         ) {
             PlantListScreen(
                 viewState = plantListViewState,
-//                onItemClick = {}
                 onItemClick = {
-                    val json = Uri.encode(Gson().toJson(it))
-                    navController.navigate("${CactusScreen.PlantDetail.name}/$json")
-
-
-//                    navController.currentBackStackEntry?.arguments =
-//                        Bundle().apply {
-//                            putParcelable("bt_device", device)
-//                        }
-//                    navController.navigate("deviceDetails")
+                    navController.navigate("${CactusScreen.PlantDetail.name}/${it.toJson()}")
                 }
             )
-//            { navController.navigate(CactusScreen.PlantDetail.name) }
         }
         val plantDetailName = CactusScreen.PlantDetail.name
         composable(
-            route = "$plantDetailName/{data}",
+            route = "$plantDetailName/{plantData}",
             arguments = listOf(
-                navArgument("data") {
-//                    type = PlantDataParamType()
-                    type = NavType.StringType
+                navArgument("plantData") {
+                    type = PlantDataParamType
                 }
             )
         ) { entry ->
-            val data = entry.arguments?.getString("data")
-            data?.let {
-                val plantData = it.jsonToClass<PlantData>()
-                PlantDetailScreen(plantData)
+            val plantData = entry.arguments?.getParcelable<PlantData>("plantData")
+            plantData?.let { data ->
+                PlantDetailScreen(plantDetailViewState = plantDetailViewState, plantData = data)
             }
-
-//            val plantData = it.arguments?.getParcelable<PlantData>("plantData")
-//            plantData?.let { data ->
-//                PlantDetailScreen(plantDetailViewState = plantDetailViewState, data)
-//            }
         }
     }
 }
