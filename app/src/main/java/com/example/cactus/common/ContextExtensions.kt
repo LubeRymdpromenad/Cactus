@@ -13,3 +13,7 @@ inline fun <reified T> Context.jsonToClass(@RawRes resourceId: Int): T {
         itemType
     )
 }
+
+inline fun <reified T> String.jsonToClass(): T {
+    return Gson().fromJson(this, T::class.java)
+}

@@ -22,7 +22,7 @@ import com.example.cactus.viewmodels.PlantListViewState
 @Composable
 fun PlantListScreen(
     viewState: PlantListViewState,
-    onItemClick: () -> Unit
+    onItemClick: (PlantData) -> Unit
 ) {
     val scrollState = rememberScrollState()
 
@@ -38,9 +38,13 @@ fun PlantListScreen(
 @Composable
 fun PlantListItem(
     plantData: PlantData,
-    onItemClick: () -> Unit) {
+    onItemClick: (PlantData) -> Unit) {
     Row(
-        modifier = Modifier.clickable(onClick = onItemClick)
+        modifier = Modifier.clickable(
+            onClick = {
+                onItemClick.invoke(plantData)
+            }
+        )
     ) {
         Image(
             modifier = Modifier.size(120.dp, 90.dp),
@@ -54,7 +58,7 @@ fun PlantListItem(
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
-        
+
         Text(text = plantData.name, Modifier.padding(16.dp))
     }
 }
