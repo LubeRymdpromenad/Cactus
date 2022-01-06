@@ -1,6 +1,5 @@
 package com.example.cactus.viewmodels
 
-import android.view.View
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -24,13 +23,6 @@ class PlantDetailViewModel @Inject constructor(
         data?.let {
             viewState.value = viewState.value.copy(plantData = it)
         }
-    }
-
-    fun searchForMore(view: View) {
-//        plantData?.name?.let {
-//            val direction = PlantDetailFragmentDirections.actionPlantDetailToUnsplashList(it)
-//            view.findNavController().navigate(direction)
-//        }
     }
 
     companion object {

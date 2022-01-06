@@ -5,10 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
@@ -51,7 +55,6 @@ fun CactusMainScreen(
     plantDetailViewState: PlantDetailViewState
 ) {
     CactusTheme {
-        val allScreens = CactusScreen.values().toList()
         val navController = rememberNavController()
         val backstackEntry = navController.currentBackStackEntryAsState()
         var currentScreen = CactusScreen.fromRoute(
@@ -59,16 +62,14 @@ fun CactusMainScreen(
         )
 
         Scaffold(
-//            topBar = {
-//                RallyTabRow(
-//                    allScreens = allScreens,
-//                    onTabSelected = { screen ->
-//                        navController.navigate(screen.name)
-//                        currentScreen = screen
-//                    },
-//                    currentScreen = currentScreen
-//                )
-//            }
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(stringResource(id = R.string.app_name))
+                    },
+                    backgroundColor = MaterialTheme.colors.primary
+                )
+             }
         ) { innerPadding ->
             CactusNavHost(
                 navController = navController,
