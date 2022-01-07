@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -26,7 +27,9 @@ import com.example.cactus.data.toJson
 import com.example.cactus.ui.theme.CactusTheme
 import com.example.cactus.viewmodels.*
 import com.example.cactus.views.CactusScreen
+import com.example.cactus.views.PlantDetailScreen
 import com.example.cactus.views.PlantListScreen
+import com.example.cactus.views.UnsplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,6 +37,7 @@ class MainActivity : ComponentActivity() {
 
     private val plantDetailViewModel: PlantDetailViewModel by viewModels()
     private val plantListViewModel: PlantListViewModel by viewModels()
+    private val unsplashViewModel: UnsplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +47,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             CactusMainScreen(
                 plantListViewState = plantListViewState,
-                plantDetailViewState = plantDetailViewState
+                plantDetailViewState = plantDetailViewState,
+                unsplashViewModel = unsplashViewModel
             )
         }
     }
@@ -52,7 +57,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CactusMainScreen(
     plantListViewState: PlantListViewState,
-    plantDetailViewState: PlantDetailViewState
+    plantDetailViewState: PlantDetailViewState,
+    unsplashViewModel: UnsplashViewModel
 ) {
     CactusTheme {
         val navController = rememberNavController()
@@ -75,7 +81,8 @@ fun CactusMainScreen(
                 navController = navController,
                 modifier = Modifier.padding(innerPadding),
                 plantListViewState,
-                plantDetailViewState
+                plantDetailViewState,
+                unsplashViewModel
             )
         }
     }
@@ -86,7 +93,8 @@ fun CactusNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     plantListViewState: PlantListViewState,
-    plantDetailViewState: PlantDetailViewState
+    plantDetailViewState: PlantDetailViewState,
+    unsplashViewModel: UnsplashViewModel
 ) {
     NavHost(
         navController = navController,
@@ -114,8 +122,29 @@ fun CactusNavHost(
         ) { entry ->
             val plantData = entry.arguments?.getParcelable<PlantData>("plantData")
             plantData?.let { data ->
-                PlantDetailScreen(plantDetailViewState = plantDetailViewState, plantData = data)
+                PlantDetailScreen(
+                    plantDetailViewState = plantDetailViewState,
+                    plantData = data,
+                    onSearchClick = { query ->
+                        navController.navigate("${CactusScreen.UnsplashList.name}/${query}")
+                    }
+                )
             }
+        }
+        val unsplashName = CactusScreen.UnsplashList.name
+        composable(
+            route = "$unsplashName/{query}",
+            arguments = listOf(
+                navArgument("query") {
+                    type = NavType.StringType
+                }
+            )
+        ) { entry ->
+            val viewState by unsplashViewModel.viewState
+            UnsplashScreen(viewState)
+
+            val query = entry.arguments?.getString("query")
+            unsplashViewModel.searchForMore(query)
         }
     }
 }

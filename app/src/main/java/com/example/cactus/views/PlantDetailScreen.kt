@@ -1,14 +1,17 @@
-package com.example.cactus.viewmodels
+package com.example.cactus.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -18,10 +21,15 @@ import coil.size.OriginalSize
 import com.example.cactus.R
 import com.example.cactus.data.PlantData
 import com.example.cactus.ui.theme.CactusTheme
+import com.example.cactus.viewmodels.PlantDetailViewState
 
 
 @Composable
-fun PlantDetailScreen(plantDetailViewState: PlantDetailViewState, plantData: PlantData) {
+fun PlantDetailScreen(
+    plantDetailViewState: PlantDetailViewState,
+    plantData: PlantData,
+    onSearchClick: (String) -> Unit
+) {
 
     val scrollState = rememberScrollState()
 
@@ -49,6 +57,15 @@ fun PlantDetailScreen(plantDetailViewState: PlantDetailViewState, plantData: Pla
             modifier = Modifier.padding(top = 16.dp, start = 16.dp)
         )
 
+        IconButton(
+            onClick = { onSearchClick.invoke(plantData.name) },
+        ){
+            Icon(
+                painter = painterResource(R.drawable.ic_search),
+                contentDescription = "Search button",
+            )
+        }
+
         Text(
             text = plantData.description,
             style = MaterialTheme.typography.body1,
@@ -73,6 +90,6 @@ fun DefaultPreview(
     @PreviewParameter(SamplePlantDataProvider::class) plantData: PlantData
 ) {
     CactusTheme {
-        PlantDetailScreen(PlantDetailViewState(), plantData)
+        PlantDetailScreen(PlantDetailViewState(), plantData, {})
     }
 }
