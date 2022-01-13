@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -34,10 +35,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private val plantDetailViewModel: PlantDetailViewModel by viewModels()
     private val plantListViewModel: PlantListViewModel by viewModels()
-    private val unsplashViewModel: UnsplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +47,6 @@ class MainActivity : ComponentActivity() {
             CactusMainScreen(
                 plantListViewState = plantListViewState,
                 plantDetailViewState = plantDetailViewState,
-                unsplashViewModel = unsplashViewModel
             )
         }
     }
@@ -58,7 +56,6 @@ class MainActivity : ComponentActivity() {
 fun CactusMainScreen(
     plantListViewState: PlantListViewState,
     plantDetailViewState: PlantDetailViewState,
-    unsplashViewModel: UnsplashViewModel
 ) {
     CactusTheme {
         val navController = rememberNavController()
@@ -82,7 +79,6 @@ fun CactusMainScreen(
                 modifier = Modifier.padding(innerPadding),
                 plantListViewState,
                 plantDetailViewState,
-                unsplashViewModel
             )
         }
     }
@@ -94,7 +90,6 @@ fun CactusNavHost(
     modifier: Modifier = Modifier,
     plantListViewState: PlantListViewState,
     plantDetailViewState: PlantDetailViewState,
-    unsplashViewModel: UnsplashViewModel
 ) {
     NavHost(
         navController = navController,
@@ -139,12 +134,11 @@ fun CactusNavHost(
                     type = NavType.StringType
                 }
             )
-        ) { entry ->
-            val viewState by unsplashViewModel.viewState
-            UnsplashScreen(viewState)
+        ) { backStackEntry ->
+//            val query = backStackEntry.arguments?.getString("query")
 
-            val query = entry.arguments?.getString("query")
-            unsplashViewModel.searchForMore(query)
+            val unsplashViewModel = hiltViewModel<UnsplashViewModel>()
+            UnsplashScreen(unsplashViewModel.getUnsplashData())
         }
     }
 }
