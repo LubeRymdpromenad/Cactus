@@ -9,10 +9,20 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.example.cactus.viewmodels.PlantDetailViewModel
 import com.example.cactus.viewmodels.PlantListViewModel
 import com.example.cactus.viewmodels.UnsplashViewModel
 
+/**
+ * To test deeplink type following in terminal
+ *
+ * For detail page:
+ * <code>adb shell am start -d "cactus://plantdetail/beta-vulgaris" -a android.intent.action.VIEW</code>
+ *
+ * For unsplash list:
+ * <code>adb shell am start -d "cactus://unsplashlist/Tomato" -a android.intent.action.VIEW</code>
+ */
 @Composable
 fun CactusNavHost(
     navController: NavHostController,
@@ -43,7 +53,10 @@ fun CactusNavHost(
                 navArgument("plantId") {
                     type = NavType.StringType
                 }
-            )
+            ),
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "cactus://$plantDetailName/{plantId}"
+            })
         ) {
             val plantDetailViewModel = hiltViewModel<PlantDetailViewModel>()
             val plantDetailViewState by plantDetailViewModel.viewState
@@ -54,14 +67,17 @@ fun CactusNavHost(
                 }
             )
         }
-        val unsplashName = CactusScreen.UnsplashList.name
+        val unsplashListName = CactusScreen.UnsplashList.name
         composable(
-            route = "$unsplashName/{query}",
+            route = "$unsplashListName/{query}",
             arguments = listOf(
                 navArgument("query") {
                     type = NavType.StringType
                 }
-            )
+            ),
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "cactus://$unsplashListName/{query}"
+            })
         ) {
             val unsplashViewModel = hiltViewModel<UnsplashViewModel>()
             UnsplashScreen(unsplashViewModel.getUnsplashData())
