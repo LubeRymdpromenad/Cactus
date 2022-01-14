@@ -9,9 +9,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.cactus.data.PlantData
-import com.example.cactus.data.PlantDataParamType
-import com.example.cactus.data.toJson
 import com.example.cactus.viewmodels.PlantDetailViewModel
 import com.example.cactus.viewmodels.PlantListViewModel
 import com.example.cactus.viewmodels.UnsplashViewModel
@@ -35,31 +32,27 @@ fun CactusNavHost(
             PlantListScreen(
                 viewState = plantListViewState,
                 onItemClick = {
-                    navController.navigate("${CactusScreen.PlantDetail.name}/${it.toJson()}")
+                    navController.navigate("${CactusScreen.PlantDetail.name}/${it.plantId}")
                 }
             )
         }
         val plantDetailName = CactusScreen.PlantDetail.name
         composable(
-            route = "$plantDetailName/{plantData}",
+            route = "$plantDetailName/{plantId}",
             arguments = listOf(
-                navArgument("plantData") {
-                    type = PlantDataParamType
+                navArgument("plantId") {
+                    type = NavType.StringType
                 }
             )
-        ) { entry ->
-            val plantData = entry.arguments?.getParcelable<PlantData>("plantData")
-            plantData?.let { data ->
-                val plantDetailViewModel = hiltViewModel<PlantDetailViewModel>()
-                val plantDetailViewState by plantDetailViewModel.viewState
-                PlantDetailScreen(
-                    plantDetailViewState = plantDetailViewState,
-                    plantData = data,
-                    onSearchClick = { query ->
-                        navController.navigate("${CactusScreen.UnsplashList.name}/${query}")
-                    }
-                )
-            }
+        ) {
+            val plantDetailViewModel = hiltViewModel<PlantDetailViewModel>()
+            val plantDetailViewState by plantDetailViewModel.viewState
+            PlantDetailScreen(
+                plantData = plantDetailViewState.plantData,
+                onSearchClick = { query ->
+                    navController.navigate("${CactusScreen.UnsplashList.name}/${query}")
+                }
+            )
         }
         val unsplashName = CactusScreen.UnsplashList.name
         composable(

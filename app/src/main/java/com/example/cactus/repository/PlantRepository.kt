@@ -18,4 +18,11 @@ class PlantRepository(
             emit(list)
         }
     }
+
+    override fun getPlant(id: String): Flow<PlantData?> {
+        return flow {
+            val list: List<PlantData> = context.jsonToClass(R.raw.plants)
+            emit(list.find { it.plantId == id })
+        }
+    }
 }

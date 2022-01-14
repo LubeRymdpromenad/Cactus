@@ -20,13 +20,10 @@ import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
 import com.example.cactus.R
 import com.example.cactus.data.PlantData
-import com.example.cactus.ui.theme.CactusTheme
-import com.example.cactus.viewmodels.PlantDetailViewState
 
 
 @Composable
 fun PlantDetailScreen(
-    plantDetailViewState: PlantDetailViewState,
     plantData: PlantData,
     onSearchClick: (String) -> Unit
 ) {
@@ -36,6 +33,7 @@ fun PlantDetailScreen(
     Column(
         modifier = Modifier.verticalScroll(scrollState)
     ) {
+
         Image(
             modifier = Modifier.height(220.dp),
 
@@ -84,12 +82,12 @@ class SamplePlantDataProvider: PreviewParameterProvider<PlantData> {
     )
 }
 
-@Preview
-@Composable
-fun DefaultPreview(
-    @PreviewParameter(SamplePlantDataProvider::class) plantData: PlantData
-) {
-    CactusTheme {
-        PlantDetailScreen(PlantDetailViewState(), plantData, {})
-    }
-}
+//@Preview
+//@Composable
+//fun DefaultPreview(
+//    @PreviewParameter(SamplePlantDataProvider::class) plantData: PlantData
+//) {
+//    CactusTheme {
+//        PlantDetailScreen(PlantDetailViewState(), plantData, {})
+//    }
+//}

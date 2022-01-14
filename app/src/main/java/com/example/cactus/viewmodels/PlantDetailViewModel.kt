@@ -3,8 +3,12 @@ package com.example.cactus.viewmodels
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.cactus.data.PlantData
+import com.example.cactus.repository.PlantDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PlantDetailViewState(
@@ -13,19 +17,22 @@ data class PlantDetailViewState(
 
 @HiltViewModel
 class PlantDetailViewModel @Inject constructor(
+    plantDataStore: PlantDataStore,
     savedStateHandle: SavedStateHandle,
 )  : ViewModel() {
     val viewState = mutableStateOf(PlantDetailViewState())
 
-    private val data: PlantData? = savedStateHandle.get<PlantData>(PLANT_DATA_SAVED_STATE_KEY)
-
     init {
-        data?.let {
-            viewState.value = viewState.value.copy(plantData = it)
-        }
-    }
+        val plantId = savedStateHandle.get<String>("plantId")
 
-    companion object {
-        private const val PLANT_DATA_SAVED_STATE_KEY = "plantData"
+        plantId?.let { id ->
+            viewModelScope.launch {
+                plantDataStore.getPlant(id).collect { plantData ->
+                    plantData?.let { it ->
+                        viewState.value = viewState.value.copy(plantData = it)
+                    }
+                }
+            }
+        }
     }
 }
