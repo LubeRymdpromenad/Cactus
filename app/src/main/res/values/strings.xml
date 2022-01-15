@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Cactus</string>
+
+    <string name="generic_error">Något gick fel</string>
 </resources>

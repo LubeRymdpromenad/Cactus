@@ -25,14 +25,8 @@ class UnsplashDataSource(
     ): LoadResult<Int, UnsplashData> {
         val nextPage = params.key ?: 1
 
-        // TODO add error handling
-        val data = unsplashDatastore.searchPhotos(query, nextPage, PER_PAGE)
-
-        return if (data == null) {
-            LoadResult.Error(
-                Exception("Boom!")
-            )
-        } else {
+        return try {
+            val data = unsplashDatastore.searchPhotos(query, nextPage, PER_PAGE)
             LoadResult.Page(
                 data = data,
                 prevKey =
@@ -40,6 +34,8 @@ class UnsplashDataSource(
                 else nextPage - 1,
                 nextKey = nextPage.plus(1)
             )
+        } catch (exception: Exception) {
+            LoadResult.Error(exception)
         }
     }
 }

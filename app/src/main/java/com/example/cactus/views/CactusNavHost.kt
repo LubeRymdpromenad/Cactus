@@ -26,7 +26,8 @@ import com.example.cactus.viewmodels.UnsplashViewModel
 @Composable
 fun CactusNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onError: (Int) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -80,7 +81,7 @@ fun CactusNavHost(
             })
         ) {
             val unsplashViewModel = hiltViewModel<UnsplashViewModel>()
-            UnsplashScreen(unsplashViewModel.getUnsplashData())
+            UnsplashScreen(unsplashViewModel.getUnsplashData(), onError)
         }
     }
 }
