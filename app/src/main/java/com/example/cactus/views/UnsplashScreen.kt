@@ -24,14 +24,23 @@ import com.example.cactus.R
 
 
 @Composable
-fun UnsplashScreen(unsplashList: Flow<PagingData<UnsplashData>>, onError: (Int) -> Unit) {
+fun UnsplashScreen(
+    unsplashList: Flow<PagingData<UnsplashData>>,
+    onItemClick: (String) -> Unit,
+    onError: (Int) -> Unit
+) {
 
     val lazyItems = unsplashList.collectAsLazyPagingItems()
     LazyColumn(
         content = {
             items(lazyItems.itemCount) { index ->
                 lazyItems[index]?.let {
-                    UnsplashListItem(it, {})
+                    UnsplashListItem(it) { unsplashData ->
+//                        onError(R.string.generic_error)
+                        unsplashData.attributionUrl?.let { url ->
+                            onItemClick(url)
+                        }
+                    }
                 }
             }
             lazyItems.apply {
@@ -59,11 +68,12 @@ fun UnsplashScreen(unsplashList: Flow<PagingData<UnsplashData>>, onError: (Int) 
 @Composable
 fun UnsplashListItem(
     unsplashData: UnsplashData,
-    onItemClick: (PlantData) -> Unit) {
+    onItemClick: (UnsplashData) -> Unit
+) {
     Row(
         modifier = Modifier.clickable(
             onClick = {
-//                onItemClick.invoke(plantData)
+                onItemClick(unsplashData)
             }
         )
     ) {

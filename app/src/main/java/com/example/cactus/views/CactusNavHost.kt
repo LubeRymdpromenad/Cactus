@@ -3,6 +3,7 @@ package com.example.cactus.views
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -29,6 +30,8 @@ fun CactusNavHost(
     modifier: Modifier = Modifier,
     onError: (Int) -> Unit
 ) {
+    val uriHandler = LocalUriHandler.current
+
     NavHost(
         navController = navController,
         startDestination = CactusScreen.PlantList.name,
@@ -81,7 +84,13 @@ fun CactusNavHost(
             })
         ) {
             val unsplashViewModel = hiltViewModel<UnsplashViewModel>()
-            UnsplashScreen(unsplashViewModel.getUnsplashData(), onError)
+            UnsplashScreen(
+                unsplashList = unsplashViewModel.getUnsplashData(),
+                onItemClick = {
+                    uriHandler.openUri(it)
+                },
+                onError = onError
+            )
         }
     }
 }

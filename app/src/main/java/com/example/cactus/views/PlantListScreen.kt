@@ -35,12 +35,13 @@ fun PlantListScreen(
 @Composable
 fun PlantListItem(
     plantData: PlantData,
-    onItemClick: (PlantData) -> Unit) {
+    onItemClick: (PlantData) -> Unit
+) {
     Row(
         modifier = Modifier.clickable(
             onClick = {
-                onItemClick.invoke(plantData)
-            }
+                onItemClick(plantData)
+            },
         )
     ) {
         Image(
